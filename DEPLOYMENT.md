@@ -12,14 +12,15 @@ This document provides instructions for deploying the PBSMon web application.
 
 ## Configuration
 
-- set <rootDir>/.env
-- run
+- run in root dir of project
 
 ```sh
 cp .env.prod.example .env
 ```
 
-**⚠️ Security Warning**: These mock data files contain sensitive information and must be transferred through a **secure channel** . Do not commit sensitive mock data to version control.
+- then fill in the missing enviroment variables
+
+**⚠️ Security Warning**: These environment variables represents sensitive information and must be transferred through a **secure channel**.
 
 ## Deploying
 
