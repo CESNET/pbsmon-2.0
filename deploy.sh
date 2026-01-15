@@ -1,3 +1,4 @@
+
 #!/bin/bash
 
 # PBSMON 2.0 Deployment Script
@@ -82,7 +83,7 @@ COMPOSE_FILE="docker-compose.prod.yml"
 
 # Build and start API first (web depends on API for OpenAPI spec generation)
 echo -e "${YELLOW}Building and starting API container first...${NC}"
-if sudo $DOCKER_COMPOSE -f "$COMPOSE_FILE" up -d --build api; then
+if $DOCKER_COMPOSE -f "$COMPOSE_FILE" up -d --build api; then
     echo -e "${GREEN}✓ API container started${NC}"
 else
     echo -e "${RED}✗ Failed to start API container${NC}"
@@ -101,9 +102,9 @@ while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
     echo -e "${YELLOW}Attempt $ATTEMPT/$MAX_ATTEMPTS: Checking API health...${NC}"
     
     # Check if API container is running
-    if sudo docker ps | grep -q pbsmon-api; then
+    if docker ps | grep -q pbsmon-api; then
         # Try to hit the health endpoint inside the container
-        if sudo docker exec pbsmon-api node -e "require('http').get('http://localhost:3000/status', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})" 2>/dev/null; then
+        if docker exec pbsmon-api node -e "require('http').get('http://localhost:3000/status', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})" 2>/dev/null; then
             API_READY=true
             echo -e "${GREEN}✓ API is ready${NC}"
             break
@@ -122,7 +123,7 @@ fi
 
 # Now build and start web service
 echo -e "${YELLOW}Building and starting web container...${NC}"
-if sudo $DOCKER_COMPOSE -f "$COMPOSE_FILE" up -d --build web; then
+if $DOCKER_COMPOSE -f "$COMPOSE_FILE" up -d --build web; then
     echo -e "${GREEN}✓ Web container started${NC}"
 else
     echo -e "${RED}✗ Failed to start web container${NC}"
@@ -134,15 +135,14 @@ sleep 5
 
 # Check container status
 echo -e "${YELLOW}Checking container status...${NC}"
-sudo $DOCKER_COMPOSE -f "$COMPOSE_FILE" ps
+$DOCKER_COMPOSE -f "$COMPOSE_FILE" ps
 
 # Show logs for the last 20 lines
 echo -e "${YELLOW}Recent logs:${NC}"
-sudo $DOCKER_COMPOSE -f "$COMPOSE_FILE" logs --tail=20
+$DOCKER_COMPOSE -f "$COMPOSE_FILE" logs --tail=20
 
 echo -e "${GREEN}Deployment completed successfully!${NC}"
 echo -e "${GREEN}Services should be available at:${NC}"
 echo -e "  - Frontend: http://localhost"
 echo -e "  - API: http://localhost/api"
 echo -e "  - Swagger: http://localhost/api/docs"
-
