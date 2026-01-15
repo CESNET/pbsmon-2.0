@@ -26,7 +26,7 @@ chmod +x /app/cron-wrapper.sh
 
 # Set up cron job to run every 2 minutes to avoid conflicts
 # Collection takes ~26 seconds, so 2 minute interval gives plenty of buffer
-echo "*/2 * * * * /app/cron-wrapper.sh" | crontab -
+echo "*/5 * * * * /app/cron-wrapper.sh" | crontab -
 
 log "Cron job configured to run every 2 minutes"
 
@@ -37,4 +37,3 @@ log "Running initial PBS data collection..."
 # Start cron in foreground
 log "Starting cron daemon..."
 exec cron -f
-

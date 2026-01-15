@@ -148,3 +148,5 @@ nginx/.htpasswd
 *.keytab
 
 pbs-collector/krb5.conf
+
+/certificate
