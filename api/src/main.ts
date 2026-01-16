@@ -36,17 +36,10 @@ async function bootstrap() {
 
   // Enable CORS
 
-  let allowedOrigins: string[] = [];
-  if (process.env.NODE_ENV === 'development') {
-    const frontendUrl = process.env.FRONTEND_URL || '';
-    allowedOrigins = frontendUrl
-      ? frontendUrl.split(',').map((url) => url.trim())
-      : [
-          'http://localhost:4000',
-          'http://localhost:5173',
-          'http://localhost:3000',
-        ];
-  }
+  const frontendUrl = process.env.FRONTEND_URL || '';
+  const allowedOrigins: string[] = frontendUrl
+    ? frontendUrl.split(',').map((url) => url.trim())
+    : [];
 
   app.enableCors({
     origin: (origin, callback) => {
@@ -64,6 +57,11 @@ async function bootstrap() {
         ) {
           callback(null, true);
         } else {
+          console.warn('[CORS] Rejected origin', {
+            origin,
+            allowedOrigins,
+            nodeEnv: process.env.NODE_ENV,
+          });
           callback(new Error('Not allowed by CORS'));
         }
       }
